@@ -1,14 +1,28 @@
-import { React  } from 'react';
+import { React , useState } from 'react';
 import {BrowserRouter, Link} from 'react-router-dom';
+import { usePokemonSample } from './hooks/fetchData.js';
 import PokemonList from './views/PokemonList.jsx';
 
 
+
 function App() {
-  const pokemonData = [
-    { name: 'Pikachu', imgSrc: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png' },
-    { name: 'Bulbasaur', imgSrc: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png' },
-    { name: 'Charmander', imgSrc: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png' },
-  ];
+  const {data, loading} = usePokemonSample();
+  const [page, setPage] = useState(1);
+
+
+  const previousPage = () =>{
+    if (page>1){
+      setPage(page-1);
+    }
+    console.log(page);
+  };
+  const nextPage = () =>{
+    if (page<5){
+      setPage(page+1);
+    }
+    console.log(page);
+  };
+
   return (
     <>
     <BrowserRouter>
@@ -24,7 +38,14 @@ function App() {
           <input className="p-2 rounded-md" type="text" placeholder="Search" />
         </div>
       </div>
-      <PokemonList  pokemonList={pokemonData}/>
+      <div>
+        {loading && <p className="text-white">Loading...</p>}
+        {data && <PokemonList pokemonList={data} currentPage = {page} />}
+      </div>
+      <div className="flex justify-center my-4 gap-20">
+        <button className="bg-yellow-500 text-black font-bold px-6 py-2 rounded" onClick = {previousPage} hidden={page === 1}>Prev</button>
+        <button className="bg-yellow-500 text-black font-bold px-6 py-2 rounded" onClick = {nextPage} hidden={page === 5}>Next</button>
+      </div>
     </BrowserRouter>
     </>
   );
