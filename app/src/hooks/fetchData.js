@@ -75,3 +75,21 @@ export function usePokemonData(id){
   }, []); 
   return {data, loading};
 }
+
+export function usePokemonNameToId(name){
+  const url = base_url+`pokemon/${name}`;
+
+
+  const [id, setId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(()=>{
+    setLoading(true); 
+    fetch(url)
+      .then((response) => response.json())
+      .then((dataFetched) => {
+        setId(dataFetched.id);
+      })  
+      .finally(() => setLoading(false));
+  }, []);
+  return {id, loading};
+}
